@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <title>Servicios Web y Mantenimiento - Tecnología Élite</title>
+
+    <meta name="description" content="Creación de páginas web a la medida, desarrollo y mantenimiento de computadoras con diseño rojo neón y negro.">
+    <meta name="keywords" content="web a la medida, mantenimiento computadoras, diseño neon, desarrollo web, soporte técnico">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Exo+2:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ========== VARIABLES Y RESET BÁSICO ========== */
+        :root{
+            --red-neon-light: #ff1a1a; 
+            --red-dark: #e60000; 
+            --bg-dark: #000; 
+            --panel-bg: #1a1a1a; 
+            --text-light: #eee;
+        }
+        *{box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{
+            margin:0;
+            font-family: 'Exo 2', sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #100000 50%, #050000 100%);
+            color:var(--text-light);
+            -webkit-font-smoothing:antialiased;
+            /* CURSOR 'TECH' - PUNTO LÁSER NEÓN */
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="3" fill="%23ff1a1a"/></svg>'), auto;
+        }
+
+        /* Fallback y Clickeables con cursor normal */
+        a, .btn-neon, .service-card, .tab-button, .faq-question {
+            cursor: pointer;
+        }
+
+        /* ========== KEYFRAMES PARA EL PULSO NEÓN ========== */
+        @keyframes neon-pulse-orange {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 165, 0, 0.3), 0 0 5px rgba(255, 165, 0, 0.1); }
+            50% { box-shadow: 0 0 20px rgba(255, 165, 0, 0.8), 0 0 10px rgba(255, 165, 0, 0.4); }
+        }
+
+        @keyframes neon-pulse-green {
+            0%, 100% { box-shadow: 0 0 10px rgba(0, 255, 0, 0.3), 0 0 5px rgba(0, 255, 0, 0.1); }
+            50% { box-shadow: 0 0 20px rgba(0, 255, 0, 0.8), 0 0 10px rgba(0, 255, 0, 0.4); }
+        }
+        /* ================================================= */
+
+        /* BARRA DE PROGRESO DE LECTURA (SCROLL INDICATOR) */
+        #scroll-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 5px;
+            width: 0%;
+            background: var(--red-neon-light);
+            z-index: 1000;
+            box-shadow: 0 0 10px var(--red-neon-light);
+            transition: width 0.1s linear;
+        }
+
+        /* TÍTULOS GENERALES */
+        h1, h2, h3{font-family:'Orbitron', sans-serif; text-align:center;}
+        h2{
+            font-size:2.2rem;
+            color:var(--red-dark);
+            text-shadow: 0 0 10px rgba(255,26,26,0.5); 
+            margin-bottom:30px;
+        }
+        p{font-size:1.05rem;line-height:1.7;color:var(--text-light);}
+
+        /* BOTONES (CTA - Call to Action) */
+        .btn-neon {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--red-dark);
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 10px rgba(230,0,0,0.5), 0 0 20px rgba(230,0,0,0.3);
+            transition: all .3s ease;
+        }
+        .btn-neon:hover {
+            background: var(--red-neon-light);
+            box-shadow: 0 0 15px var(--red-neon-light), 0 0 35px var(--red-dark);
+            transform: scale(1.05);
+        }
+
+        /* ========== HEADER (Banner Principal) ========== */
+        header{
+            background: var(--bg-dark); 
+            padding:100px 20px 60px;
+            text-align:center;
+            border-bottom: 3px solid var(--red-neon-light);
+            box-shadow: 0 0 20px rgba(255,26,26,0.2);
+            position: relative;
+        }
+        .typing-container {
+            min-height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        #typed-text {
+            font-size:3.5rem;
+            color:var(--red-neon-light);
+            text-shadow: 0 0 12px var(--red-neon-light), 0 0 25px var(--red-dark);
+            font-family:'Orbitron', sans-serif;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: .15em solid var(--red-neon-light); 
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--red-neon-light); }
+        }
+
+        header p{
+            font-size:1.2rem;
+            font-weight:600;
+            margin-bottom: 40px;
+        }
+
+        /* ========== MENÚ HAMBURGUESA Y DESKTOP NAV ========== */
+        .desktop-nav {
+            display: none; 
+            justify-content: center;
+            gap: 25px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 26, 26, 0.2);
+        }
+        .desktop-nav a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 15px;
+            transition: color .35s, text-shadow .35s, background .35s;
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            border-radius: 5px;
+        }
+        .desktop-nav a:hover {
+            color: var(--red-neon-light);
+            text-shadow: 0 0 8px var(--red-neon-light);
+            background: rgba(255,26,26,0.1);
+        }
+
+        .hamburger-icon {
+            position: fixed; 
+            top: 20px;
+            right: 20px;
+            width: 35px;
+            height: 30px;
+            cursor: pointer;
+            z-index: 200;
+            display: none; 
+        }
+        .hamburger-icon span {
+            display: block;
+            width: 100%;
+            height: 4px;
+            background-color: var(--red-neon-light);
+            margin-bottom: 6px;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 5px var(--red-neon-light);
+        }
+        .hamburger-icon.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
+        .hamburger-icon.open span:nth-child(2) { opacity: 0; }
+        .hamburger-icon.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
+
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 80%;
+            max-width: 300px;
+            height: 100%;
+            background: var(--bg-dark); 
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 150;
+            padding-top: 100px;
+            box-shadow: -10px 0 30px rgba(255, 26, 26, 0.4);
+            border-left: 3px solid var(--red-neon-light);
+        }
+        .mobile-menu.active { transform: translateX(0); }
+
+        .mobile-menu a {
+            display: block;
+            padding: 20px 30px;
+            color: var(--text-light);
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            border-bottom: 1px solid rgba(255, 26, 26, 0.1);
+            transition: background 0.2s ease, color 0.2s ease, text-shadow 0.2s ease;
+        }
+        .mobile-menu a:hover {
+            background: rgba(255, 26, 26, 0.2); 
+            color: var(--red-neon-light);
+            text-shadow: 0 0 8px var(--red-neon-light); 
+        }
+
+        /* ========== SECCIONES PRINCIPALES ========== */
+        section{padding:80px 18px;max-width:1200px;margin:0 auto}
+
+        /* TARJETAS DE SERVICIOS */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        .service-card {
+            background: var(--panel-bg);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid rgba(230,0,0,0.4);
+            box-shadow: 0 0 15px rgba(230,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+        }
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 0 25px var(--red-neon-light), 0 0 40px rgba(230,0,0,0.5); 
+            background: #250000; 
+        }
+        .service-card i {
+            font-size: 3rem;
+            color: var(--red-neon-light);
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px var(--red-neon-light);
+            transition: transform 0.4s ease-in-out;
+        }
+        
+        .service-card h3 { color: var(--red-neon-light); font-size: 1.5rem; margin-bottom: 10px; }
+        .service-card p { font-size: 1rem; color: #ccc; }
+
+
+        /* SECCIÓN PREGUNTAS FRECUENTES (FAQ / ACORDEÓN) */
+        .faq-container {
+            max-width: 800px;
+            margin: 50px auto 0;
+        }
+        .faq-item {
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 26, 26, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: box-shadow 0.3s ease;
+        }
+        .faq-item:hover {
+            box-shadow: 0 0 15px rgba(255, 26, 26, 0.4);
+        }
+        .faq-question {
+            background: var(--panel-bg);
+            color: var(--text-light);
+            padding: 18px 25px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            transition: background 0.3s;
+        }
+        .faq-question:hover {
+            background: #2a0000;
+        }
+        .faq-question.active {
+            background: var(--red-dark);
+            color: #fff;
+        }
+        .faq-question i { 
+            color: var(--red-neon-light);
+            transition: transform 0.3s ease;
+        }
+        .faq-question.active i {
+            transform: rotate(180deg); 
+            color: #fff;
+        }
+
+        .faq-answer {
+            background: #111;
+            padding: 0 25px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-in-out, padding 0.4s ease-in-out;
+        }
+        .faq-answer p {
+            padding: 15px 0;
+            margin: 0;
+            color: #ccc;
+        }
+        .faq-answer.active {
+            max-height: 500px;
+            padding-bottom: 15px;
+        }
+
+        /* LÍNEA DE TIEMPO ANIMADA (PROCESO) */
+        .steps-container {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            margin-top: 50px;
+            position: relative;
+            padding-left: 20px;
+        }
+        .steps-container::before { content: ''; position: absolute; left: 0; top: 0; width: 5px; height: 100%; background: rgba(230, 0, 0, 0.2); border-radius: 5px; }
+        .timeline-progress { 
+            position: absolute; left: 0; top: 0; width: 5px; height: 0; 
+            background: var(--red-neon-light); 
+            box-shadow: 0 0 15px var(--red-neon-light); 
+            border-radius: 5px; 
+            z-index: 10; 
+            transition: height 0.2s linear;
+        }
+        .step { display: flex; align-items: center; gap: 25px; background: var(--panel-bg); padding: 20px; border-left: 5px solid var(--red-dark); border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); opacity: 0; transition: opacity 0.5s ease-out, transform 0.5s ease-out; transform: translateX(-50px); position: relative; }
+        .step.visible-step { opacity: 1; transform: translateX(0); }
+        .step::before { content: ''; position: absolute; left: -27px; width: 15px; height: 15px; background: var(--red-neon-light); border: 3px solid var(--bg-dark); border-radius: 50%; box-shadow: 0 0 10px var(--red-neon-light); z-index: 20; }
+        .step-number { font-family: 'Orbitron', sans-serif; font-size: 3rem; font-weight: 700; color: var(--red-neon-light); text-shadow: 0 0 5px var(--red-neon-light); min-width: 50px; text-align: center; }
+        .step-content h3 { text-align: left; color: var(--red-neon-light); margin-bottom: 5px; }
+        .step-content p { margin: 0; font-size: 0.95rem; }
+
+        /* MANTENIMIENTO TABS */
+        .maint-tabs-container { display: flex; flex-direction: column; gap: 30px; margin-top: 40px; }
+        .tab-buttons { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; }
+        .tab-button { background: var(--panel-bg); color: var(--red-dark); border: 2px solid var(--red-dark); padding: 10px 20px; cursor: pointer; font-family: 'Orbitron', sans-serif; text-transform: uppercase; transition: all 0.3s ease; border-radius: 6px; }
+        .tab-button:hover:not(.active) { border-color: var(--red-neon-light); color: var(--red-neon-light); }
+        .tab-button.active { background: var(--red-dark); color: #fff; box-shadow: 0 0 15px rgba(230,0,0,0.5); }
+        .tab-content { background: var(--panel-bg); padding: 30px; border-radius: 12px; border: 1px solid rgba(230,0,0,0.4); box-shadow: 0 0 15px rgba(230,0,0,0.2); position: relative; overflow: hidden; }
+        .tab-pane { display: none; animation: fadeIn 0.5s ease-in-out; }
+        .tab-pane.active { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: center; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .maint-status h3 { text-align: left; color: var(--red-neon-light); margin-top: 0; font-size: 1.8rem; }
+        .maint-status p { font-size: 1rem; color: #ccc; }
+        .status-box { 
+            background: #000; 
+            padding: 20px; 
+            border-radius: 8px; 
+            text-align: center; 
+            border: 1px solid #333; 
+        }
+        
+        /* APLICACIÓN DE ANIMACIÓN DE PULSO NEÓN */
+        .status-box.before { 
+            border-left: 5px solid orange; 
+            animation: neon-pulse-orange 2s infinite alternate; /* Animación de Pulso Naranja */
+        }
+        .status-box.after { 
+            border-left: 5px solid #00ff00; 
+            animation: neon-pulse-green 2s infinite alternate; /* Animación de Pulso Verde */
+        }
+        
+        .status-box i { font-size: 3rem; margin-bottom: 10px; }
+        .status-box .before i { color: orange; }
+        .status-box .after i { color: #00ff00; }
+        .status-box h4 { font-family: 'Orbitron', sans-serif; margin: 5px 0; font-size: 1.2rem; color: #eee; }
+
+        /* BARRAS DE HABILIDADES (SKILLS) */
+        .skills-container {
+            max-width: 800px;
+            margin: 50px auto 0;
+            display: grid;
+            gap: 25px;
+        }
+        .skill-bar-wrap {
+            background: var(--panel-bg);
+            border-radius: 8px;
+            padding: 15px 25px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        .skill-bar-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .skill-bar-info h3 {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            text-align: left;
+            margin: 0;
+        }
+        .skill-bar-info span {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--red-neon-light);
+            font-weight: 700;
+        }
+        .skill-bar {
+            height: 10px;
+            background: #333;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .skill-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #ff1a1a 0%, #e60000 50%, #b30000 100%);
+            width: 0; 
+            transition: width 1.5s ease-in-out;
+            box-shadow: 0 0 8px var(--red-neon-light);
+        }
+
+        /* CONTACTO FINAL */
+        .contact-cta {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(230, 0, 0, 0.05);
+            border-top: 1px dashed rgba(230, 0, 0, 0.4);
+            border-bottom: 1px dashed rgba(230, 0, 0, 0.4);
+            margin-top: 50px;
+        }
+        .social-icons a {
+            font-size: 2.5rem;
+            margin: 0 20px;
+            color: var(--red-dark);
+            transition: color 0.3s ease, transform 0.3s ease, text-shadow 0.3s ease;
+            display: inline-block;
+        }
+        .social-icons a:hover {
+            color: var(--red-neon-light);
+            transform: scale(1.15);
+            text-shadow: 0 0 12px var(--red-neon-light);
+        }
+        footer{
+            background:var(--bg-dark);
+            color:#777;
+            text-align:center;
+            padding:25px;
+            border-top: 1px solid rgba(230, 0, 0, 0.2);
+        }
+
+        /* CSS para animación de revelación */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .hamburger-icon { display: block; }
+            .desktop-nav { display: none; }
+            header { padding-top: 60px; }
+            .tab-pane.active { grid-template-columns: 1fr; } 
+        }
+        @media (min-width: 901px) {
+            .hamburger-icon { display: none; }
+            .desktop-nav { display: flex; }
+        }
+
+        @media (max-width: 800px) {
+            #typed-text { font-size: 2.5rem; }
+            .steps-container { padding-left: 0; }
+            .steps-container::before, .timeline-progress { display: none; } 
+            .step { flex-direction: column; text-align: center; border-left: none; padding-top: 40px; }
+            .step::before { top: 0; left: 50%; transform: translate(-50%, -50%); }
+            .step-content h3 { text-align: center; }
+            .step-number { margin-bottom: 10px; }
+        }
+        @media (max-width: 500px) {
+            #typed-text { font-size: 1.8rem; }
+            .contact-cta .btn-neon {
+                display: block; 
+                width: 100%; 
+                margin: 10px 0 !important; 
+                text-align: center; 
+            }
+            .faq-question { font-size: 1rem; }
+            .contact-cta .social-icons { margin-top: 20px; }
+        }
+        @media (max-width: 400px) { 
+            #typed-text { font-size: 1.2rem; } 
+        }
+        @media (max-width: 350px) { 
+            #typed-text { font-size: 1.0rem; }
+        }
+    </style>
+</head>
+<body>
+    
+    <div id="scroll-indicator"></div>
+
+    <div class="hamburger-icon" id="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="#servicios">Servicios</a>
+        <a href="#habilidades">Habilidades</a>
+        <a href="#web">Diseño Web</a>
+        <a href="#mantenimiento">Mantenimiento PC</a>
+        <a href="#proceso">Proceso</a>
+        <a href="#preguntas">FAQ</a>
+        <a href="#contacto">Contacto</a>
+    </div>
+
+    <header>
+        <div class="typing-container reveal">
+            <div id="typed-text"></div> 
+        </div>
+        
+        <p class="reveal">Demostramos Calidad: Elige servicios de un verdadero experto.</p>
+        
+        <div class="reveal" style="margin-bottom: 40px;">
+            <a href="https://wa.me/573137836565" target="_blank" class="btn-neon">¡Impulsa tu Negocio Ahora!</a>
+        </div>
+        
+        <div class="desktop-nav reveal">
+            <a href="#servicios">Servicios</a>
+            <a href="#habilidades">Habilidades</a>
+            <a href="#web">Diseño Web</a>
+            <a href="#mantenimiento">Mantenimiento PC</a>
+            <a href="#proceso">Proceso</a>
+            <a href="#preguntas">FAQ</a>
+            <a href="#contacto">Contacto</a>
+        </div>
+    </header>
+
+    <main>
+        <section id="servicios" class="reveal">
+            <h2>Nuestra Zona de Especialización</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <i class="fas fa-laptop-code"></i>
+                    <h3>Creación Web a la Medida</h3>
+                    <p>Diseñamos y desarrollamos sitios web únicos que se adaptan 100% a tus objetivos. Desde landing pages hasta e-commerce avanzados.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-tools"></i>
+                    <h3>Mantenimiento de Computadoras</h3>
+                    <p>Optimización completa, limpieza de virus, instalación de software y hardware. Devolvemos el máximo rendimiento a tus equipos.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-rocket"></i>
+                    <h3>Soporte y Optimización</h3>
+                    <p>Servicio continuo para garantizar que tu plataforma web y tus sistemas informáticos operen siempre a máxima velocidad y seguridad.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="habilidades" class="reveal">
+            <h2>Mi Stack de Programación y Soporte</h2>
+            <p style="text-align: center; max-width: 800px; margin: 0 auto 40px;">Conocimiento profundo en las herramientas más solicitadas para garantizar la calidad en cada proyecto, tanto en desarrollo como en hardware.</p>
+
+            <div class="skills-container">
+                <div class="skill-bar-wrap reveal">
+                    <div class="skill-bar-info">
+                        <h3>🥇 Creación de Sitios Web Modernos</h3> 
+                        <span data-percent="95">95%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-skill-percent="95"></div>
+                    </div>
+                </div>
+
+                <div class="skill-bar-wrap reveal">
+                    <div class="skill-bar-info">
+                        <h3>⚙️ Conexión de Sistemas (E-commerce, Datos)</h3> 
+                        <span data-percent="85">85%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-skill-percent="85"></div>
+                    </div>
+                </div>
+
+                <div class="skill-bar-wrap reveal">
+                    <div class="skill-bar-info">
+                        <h3>🛠️ Reparación Física de Computadoras</h3>
+                        <span data-percent="98">98%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-skill-percent="98"></div>
+                    </div>
+                </div>
+
+                <div class="skill-bar-wrap reveal">
+                    <div class="skill-bar-info">
+                        <h3>🔒 Protección contra Virus y Hackers</h3> 
+                        <span data-percent="80">80%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-skill-percent="80"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="web" class="reveal">
+            <h2>Creación de Páginas Web que Dejan Huella</h2>
+            <p style="text-align: center; max-width: 800px; margin: 0 auto 40px;">Tu sitio web es tu activo digital más importante. Creamos experiencias que convierten visitantes en clientes, enfocados en diseño, velocidad y SEO.</p>
+            
+            <div class="services-grid">
+                <div class="service-card">
+                    <h3>Diseño UX/UI</h3>
+                    <p>Interfaces intuitivas y atractivas para una navegación perfecta en cualquier dispositivo.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Código Limpio</h3>
+                    <p>Desarrollo con tecnologías modernas para una carga ultra-rápida y fácil mantenimiento.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Integración</h3>
+                    <p>Conecta tu web con CRM, pagos en línea y herramientas de marketing.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="mantenimiento" class="reveal">
+            <h2>Diagnóstico y Soluciones de Alto Rendimiento</h2>
+            <p style="text-align: center; max-width: 800px; margin: 0 auto 40px;">No solo reparamos, optimizamos. Demostramos el impacto de un mantenimiento profesional con resultados medibles.</p>
+
+            <div class="maint-tabs-container">
+                <div class="tab-buttons">
+                    <button class="tab-button active" data-tab="tab-velocidad">
+                        <i class="fas fa-tachometer-alt"></i> Velocidad y Rendimiento
+                    </button>
+                    <button class="tab-button" data-tab="tab-seguridad">
+                        <i class="fas fa-shield-alt"></i> Seguridad y Virus
+                    </button>
+                    <button class="tab-button" data-tab="tab-hardware">
+                        <i class="fas fa-memory"></i> Hardware y Componentes
+                    </button>
+                </div>
+
+                <div class="tab-content" id="maint-tab-content">
+                    
+                    <div class="tab-pane active" id="tab-velocidad">
+                        <div class="maint-status">
+                            <h3>Problema Frecuente</h3>
+                            <p>El equipo tarda una eternidad en arrancar, las aplicaciones se congelan y la experiencia de trabajo es frustrante.</p>
+                            <a href="https://wa.me/573137836565" target="_blank" class="btn-neon" style="font-size: 0.9rem;">Diagnóstico Rápido</a>
+                        </div>
+                        <div class="status-boxes">
+                            <div class="status-box before">
+                                <i class="fas fa-hourglass-half"></i>
+                                <h4>ANTES</h4>
+                                <p>Tiempo de arranque: 2:30 min</p>
+                                <p>Uso de CPU inactivo: 85%</p>
+                            </div>
+                            <div class="status-box after">
+                                <i class="fas fa-bolt"></i>
+                                <h4>DESPUÉS</h4>
+                                <p>Tiempo de arranque: 0:15 min</p>
+                                <p>Uso de CPU inactivo: 10%</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane" id="tab-seguridad">
+                        <div class="maint-status">
+                            <h3>Solución de Seguridad</h3>
+                            <p>Eliminamos el software malicioso, recuperamos archivos y configuramos firewalls y antivirus de nivel profesional.</p>
+                            <a href="https://wa.me/573137836565" target="_blank" class="btn-neon" style="font-size: 0.9rem;">Limpieza Total</a>
+                        </div>
+                        <div class="status-boxes">
+                            <div class="status-box before">
+                                <i class="fas fa-bug"></i>
+                                <h4>ANTES</h4>
+                                <p>Archivos infectados: 10+</p>
+                                <p>Riesgo de robo de datos: ALTO</p>
+                            </div>
+                            <div class="status-box after">
+                                <i class="fas fa-lock"></i>
+                                <h4>DESPUÉS</h4>
+                                <p>Archivos infectados: 0</p>
+                                <p>Riesgo de robo de datos: MÍNIMO</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane" id="tab-hardware">
+                        <div class="maint-status">
+                            <h3>Actualización y Diagnóstico de Hardware</h3>
+                            <p>Evaluamos tus componentes internos, diagnosticamos fallas y sugerimos mejoras inteligentes (RAM, SSD) para alargar la vida del equipo.</p>
+                            <a href="https://wa.me/573137836565" target="_blank" class="btn-neon" style="font-size: 0.9rem;">Cotizar Componentes</a>
+                        </div>
+                        <div class="status-boxes">
+                            <div class="status-box before">
+                                <i class="fas fa-thermometer-three-quarters"></i>
+                                <h4>ANTES</h4>
+                                <p>Temperatura de CPU: 95°C (sobrecalentamiento)</p>
+                                <p>Almacenamiento: HDD (Lento)</p>
+                            </div>
+                            <div class="status-box after">
+                                <i class="fas fa-fan"></i>
+                                <h4>DESPUÉS</h4>
+                                <p>Temperatura de CPU: 60°C (óptima)</p>
+                                <p>Almacenamiento: SSD (Instantáneo)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="proceso" class="reveal">
+            <h2>Nuestro Proceso de Creación Web (Paso a Paso)</h2>
+            <div class="steps-container" id="timeline-container">
+                <div class="timeline-progress" id="timeline-progress"></div> 
+                
+                <div class="step">
+                    <div class="step-number">01</div>
+                    <div class="step-content">
+                        <h3>Planificación y Estrategia</h3>
+                        <p>Definimos tus metas, audiencia y estructura del sitio. ¡El mapa es crucial antes de construir!</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">02</div>
+                    <div class="step-content">
+                        <h3>Diseño y Prototipado</h3>
+                        <p>Creamos el diseño visual (Mockups) y la experiencia de usuario (UX) en un entorno de prueba.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">03</div>
+                    <div class="step-content">
+                        <h3>Desarrollo y Código</h3>
+                        <p>Transformamos el diseño en código funcional y responsivo, listo para integrar contenido.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">04</div>
+                    <div class="step-content">
+                        <h3>Lanzamiento y Monitoreo</h3>
+                        <p>Implementación final, pruebas de seguridad y velocidad. Tu web está online y bajo supervisión.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="preguntas" class="reveal">
+            <h2>Preguntas Frecuentes (FAQ)</h2>
+            <p style="text-align: center; max-width: 800px; margin: 0 auto 40px;">Resolvemos tus dudas antes de empezar. Transparencia y claridad son nuestra prioridad.</p>
+
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>¿Cuánto tiempo tarda el desarrollo de una página web?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Depende de la complejidad. Una Landing Page puede estar lista en 1-2 semanas. Un E-commerce complejo o un sitio con base de datos puede tomar entre 4 y 8 semanas. Te daremos un cronograma exacto en la fase de planificación.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>¿Necesito tener mi Hosting/Dominio contratado?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>No necesariamente. Podemos encargarnos de la contratación y configuración de tu dominio y hosting, asegurando el mejor rendimiento y seguridad desde el primer día. Si ya tienes uno, trabajamos con él sin problema.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>¿El mantenimiento de computadoras se hace a domicilio o remoto?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Ofrecemos ambas opciones. El diagnóstico de software y la optimización básica pueden ser remotos. Para limpieza de hardware, cambio de componentes o reparaciones mayores, es necesario trabajar con el equipo en nuestro taller para garantizar un servicio de élite.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>¿Ofrecen garantía en sus servicios?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Sí. Ofrecemos garantía por fallos relacionados con nuestro trabajo. En desarrollo web, ofrecemos un período de soporte post-lanzamiento. En mantenimiento, la garantía cubre las reparaciones o piezas que instalamos.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contacto" class="contact-cta reveal">
+            <h2>¿Listo para el Próximo Nivel?</h2>
+            <p style="font-size: 1.2rem; font-family: 'Orbitron', sans-serif; color: var(--red-neon-light);">Hablemos de tu proyecto web o la salud de tus equipos.</p>
+            
+            <div style="margin: 30px 0;">
+                <a href="https://wa.me/573137836565" target="_blank" class="btn-neon">
+                    <i class="fab fa-whatsapp"></i> Chatear Ahora
+                </a>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <p style="font-size: 1rem; color: #ccc; margin-bottom: 5px;">Contacto por Correo Electrónico:</p>
+                <span style="font-family: 'Orbitron', sans-serif; font-size: 1.1rem; color: var(--red-neon-light); text-shadow: 0 0 5px rgba(255, 26, 26, 0.5);">
+                    <i class="fas fa-envelope" style="margin-right: 8px;"></i> jeanpierreleniz3@gmail.com
+                </span>
+            </div>
+            <div class="social-icons" style="margin-top: 40px;">
+                <a href="https://www.instagram.com/_erreip._/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>Servicios Tecnológicos &copy; 2025. Desarrollado por <span style="color:var(--red-neon-light);">Jean Pierre Leniz</span></p>
+    </footer>
+
+    <script>
+        // === FUNCIÓN TYPEWRITER ===
+        const textElement = document.getElementById('typed-text');
+        const textToType = "Soluciones Web y Mantenimiento Élite";
+        let charIndex = 0;
+
+        function typeText() {
+            if (charIndex < textToType.length) {
+                textElement.textContent += textToType.charAt(charIndex);
+                charIndex++;
+                setTimeout(typeText, 100); 
+            } else {
+                textElement.style.borderRight = 'none'; 
+            }
+        }
+        window.addEventListener('load', () => {
+            setTimeout(typeText, 500);
+        });
+
+        // === SCROLL INDICATOR ===
+        function updateScrollIndicator() {
+            const indicator = document.getElementById('scroll-indicator');
+            const scrollY = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            
+            if (docHeight === 0) {
+                indicator.style.width = '100%';
+                return;
+            }
+
+            const scrollPercent = (scrollY / docHeight) * 100;
+            indicator.style.width = scrollPercent + '%';
+        }
+        window.addEventListener('scroll', updateScrollIndicator);
+        window.addEventListener('resize', updateScrollIndicator);
+        window.addEventListener('load', updateScrollIndicator);
+
+
+        // === FUNCIÓN HAMBURGUESA ===
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuLinks = mobileMenu.querySelectorAll('a');
+
+        function toggleMenu() {
+            hamburger.classList.toggle('open');
+            mobileMenu.classList.toggle('active');
+            document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : 'auto';
+        }
+
+        hamburger.addEventListener('click', toggleMenu);
+
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (mobileMenu.classList.contains('active')) {
+                    toggleMenu();
+                }
+            });
+        });
+
+
+        // === FUNCIÓN ACORDEÓN (FAQ) ===
+        const faqQuestions = document.querySelectorAll('.faq-question');
+
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                const isActive = question.classList.contains('active');
+
+                // Cierra todos los demás
+                document.querySelectorAll('.faq-question.active').forEach(q => {
+                    if (q !== question) {
+                        q.classList.remove('active');
+                        q.nextElementSibling.classList.remove('active');
+                    }
+                });
+
+                if (!isActive) {
+                    // Abre el actual
+                    question.classList.add('active');
+                    answer.classList.add('active');
+                } else {
+                    // Cierra el actual
+                    question.classList.remove('active');
+                    answer.classList.remove('active');
+                }
+            });
+        });
+
+
+        // === FUNCIÓN TABS MANTENIMIENTO ===
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabPanes = document.querySelectorAll('.tab-pane');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetId = button.getAttribute('data-tab');
+
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabPanes.forEach(pane => pane.classList.remove('active'));
+
+                button.classList.add('active');
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+
+        // === BARRAS DE HABILIDADES ANIMADAS ===
+        const skillProgressBars = document.querySelectorAll('.skill-progress');
+
+        const skillObserver = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const progressBar = entry.target;
+                    const percent = progressBar.getAttribute('data-skill-percent');
+                    progressBar.style.width = percent + '%';
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.7 });
+
+        skillProgressBars.forEach(bar => skillObserver.observe(bar));
+
+        
+        // === LÍNEA DE TIEMPO ANIMADA ===
+        const timelineContainer = document.getElementById('timeline-container');
+        const timelineProgress = document.getElementById('timeline-progress');
+        const steps = document.querySelectorAll('.steps-container .step');
+
+        function animateTimeline() {
+            if (!timelineContainer) return;
+
+            const rect = timelineContainer.getBoundingClientRect();
+            const containerHeight = timelineContainer.offsetHeight;
+            const viewportHeight = window.innerHeight;
+            const containerTop = rect.top;
+            
+            // Lógica para la línea de progreso (Desktop)
+            if (window.innerWidth >= 800) {
+                if (containerTop < viewportHeight && rect.bottom > 0) {
+                    let visibleHeight = viewportHeight - containerTop;
+                    let progress = Math.min(1, Math.max(0, visibleHeight / containerHeight));
+                    timelineProgress.style.height = `${progress * containerHeight}px`;
+                } else if (rect.bottom < 0) {
+                    timelineProgress.style.height = `${containerHeight}px`;
+                } else if (containerTop > viewportHeight) { 
+                    timelineProgress.style.height = '0px'; 
+                }
+            }
+            
+            // Lógica para pasos
+            if (containerTop < viewportHeight && rect.bottom > 0) {
+                steps.forEach(step => {
+                    const stepRect = step.getBoundingClientRect();
+                    const stepProgressPoint = (stepRect.top + stepRect.height / 2) - viewportHeight;
+                    
+                    if (stepProgressPoint < -150) { 
+                        step.classList.add('visible-step');
+                    }
+                });
+            } else if (rect.bottom < 0) {
+                steps.forEach(step => step.classList.add('visible-step'));
+            } else if (containerTop > viewportHeight) {
+                steps.forEach(step => step.classList.remove('visible-step'));
+            }
+        }
+        
+        window.addEventListener('scroll', animateTimeline);
+        window.addEventListener('load', animateTimeline);
+
+
+        // === FUNCIÓN REVEAL ON SCROLL ===
+        const revealEls = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting){
+                    entry.target.classList.add('visible');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, {threshold:0.15});
+        revealEls.forEach(el => observer.observe(el));
+    </script>
+
+</body>
+</html>
