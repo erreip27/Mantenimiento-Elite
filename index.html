@@ -1,14 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-0TNFF6WR0E"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-0TNFF6WR0E');
-</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
     <title>Servicios Web y Mantenimiento - Tecnología Élite</title>
 
@@ -18,6 +10,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Exo+2:wght@400;600&display=swap" rel="stylesheet">
     
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+
     <style>
         /* ========== VARIABLES Y RESET BÁSICO ========== */
         :root{
@@ -43,6 +37,89 @@
         a, .btn-neon, .service-card, .tab-button, .faq-question {
             cursor: pointer;
         }
+
+        /* 🟢 CSS PARA EL BANNER DE COOKIES */
+        #cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--panel-bg);
+            border-top: 2px solid var(--red-dark);
+            box-shadow: 0 -5px 20px rgba(255, 26, 26, 0.4);
+            padding: 15px 20px;
+            z-index: 5000; /* Asegura que esté por encima de todo */
+            display: none; /* Se mostrará con JS si no hay consentimiento */
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            font-size: 0.95rem;
+        }
+
+        #cookie-banner p {
+            margin: 0;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+
+        #cookie-banner .cookie-buttons {
+            display: flex;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        #cookie-banner .btn-accept, 
+        #cookie-banner .btn-reject {
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        #cookie-banner .btn-accept {
+            background: var(--red-neon-light);
+            color: #fff;
+            border: none;
+            box-shadow: 0 0 10px rgba(255, 26, 26, 0.5);
+        }
+        #cookie-banner .btn-accept:hover {
+            background: var(--red-dark);
+            box-shadow: 0 0 15px var(--red-neon-light);
+        }
+        
+        #cookie-banner .btn-reject {
+            background: transparent;
+            color: var(--text-light);
+            border: 1px solid var(--red-dark);
+        }
+        #cookie-banner .btn-reject:hover {
+            background: rgba(255, 26, 26, 0.1);
+            color: var(--red-neon-light);
+            border-color: var(--red-neon-light);
+        }
+
+        @media (max-width: 768px) {
+            #cookie-banner {
+                flex-direction: column;
+                text-align: center;
+            }
+            #cookie-banner p {
+                padding-bottom: 10px;
+            }
+            #cookie-banner .cookie-buttons {
+                width: 100%;
+                justify-content: stretch;
+            }
+            #cookie-banner .btn-accept, 
+            #cookie-banner .btn-reject {
+                flex-grow: 1;
+            }
+        }
+        /* FIN CSS BANNER DE COOKIES */
 
         /* ========== KEYFRAMES PARA EL PULSO NEÓN ========== */
         @keyframes neon-pulse-orange {
@@ -477,7 +554,6 @@
             .steps-container::before, .timeline-progress { display: none; } 
             .step { flex-direction: column; text-align: center; border-left: none; padding-top: 40px; }
             .step::before { top: 0; left: 50%; transform: translate(-50%, -50%); }
-            .step-content h3 { text-align: center; }
             .step-number { margin-bottom: 10px; }
         }
         @media (max-width: 500px) {
@@ -498,7 +574,7 @@
             #typed-text { font-size: 1.0rem; }
         }
     </style>
-</head>
+    </head>
 <body>
     
     <div id="scroll-indicator"></div>
@@ -828,7 +904,80 @@
         <p>Servicios Tecnológicos &copy; 2025. Desarrollado por <span style="color:var(--red-neon-light);">Jean Pierre Leniz</span></p>
     </footer>
 
+    <div id="cookie-banner">
+        <p>Usamos cookies para mejorar tu experiencia y analizar el tráfico. Al hacer clic en "Aceptar", consientes su uso. Puedes leer nuestra <a href="/politica-cookies.html" style="color:var(--red-neon-light); text-decoration: underline;">Política de Cookies</a>.</p>
+        <div class="cookie-buttons">
+            <button class="btn-reject" id="btn-reject-cookies">Rechazar</button>
+            <button class="btn-accept" id="btn-accept-cookies">Aceptar</button>
+        </div>
+    </div>
+
+
     <script>
+        // === GESTIÓN PROFESIONAL DE COOKIES (INICIO) ===
+        const CONSENT_COOKIE_NAME = 'cookie_consent';
+        const CONSENT_ACCEPTED_VALUE = 'accepted';
+        const CONSENT_REJECTED_VALUE = 'rejected';
+        const DAYS_TO_EXPIRE = 365; // Cookie persistente por 1 año
+
+        const cookieBanner = document.getElementById('cookie-banner');
+        const btnAccept = document.getElementById('btn-accept-cookies');
+        const btnReject = document.getElementById('btn-reject-cookies');
+
+        // Función para establecer el consentimiento (Persistente)
+        function setConsent(value) {
+            Cookies.set(CONSENT_COOKIE_NAME, value, { expires: DAYS_TO_EXPIRE, path: '/' });
+            cookieBanner.style.display = 'none';
+        }
+
+        // Función para cargar los scripts de terceros (ej. Google Analytics, si los tuvieras)
+        function loadNonEssentialScripts() {
+            // 🛑 NOTA: Aquí irían los scripts que SÓLO se deben cargar tras la aceptación.
+            // Por ejemplo:
+            /*
+            var script = document.createElement('script');
+            script.src = 'https://www.google-analytics.com/analytics.js';
+            document.head.appendChild(script);
+            */
+            console.log("Scripts de análisis/marketing cargados (CONSENTIMIENTO ACEPTADO)");
+
+            // 🟢 Ejemplo de OTRA cookie persistente (solo para testear)
+            Cookies.set('tracking_id_user', 'USR-' + Math.random().toString(36).substring(2, 9), { expires: DAYS_TO_EXPIRE, path: '/' });
+        }
+
+        // Manejadores de eventos del banner
+        if (btnAccept && btnReject) {
+            btnAccept.addEventListener('click', () => {
+                setConsent(CONSENT_ACCEPTED_VALUE);
+                loadNonEssentialScripts();
+            });
+
+            btnReject.addEventListener('click', () => {
+                setConsent(CONSENT_REJECTED_VALUE);
+            });
+        }
+
+        // Función de inicialización al cargar la página
+        function checkCookieConsent() {
+            const consent = Cookies.get(CONSENT_COOKIE_NAME);
+
+            if (consent === CONSENT_ACCEPTED_VALUE) {
+                // Si ya aceptó, cargamos los scripts de seguimiento
+                loadNonEssentialScripts();
+            } else if (consent === CONSENT_REJECTED_VALUE) {
+                // Si rechazó, no hacemos nada (el banner sigue oculto)
+                console.log("Consentimiento previamente rechazado. No se cargan scripts no esenciales.");
+            } else {
+                // No hay cookie de consentimiento, mostramos el banner
+                cookieBanner.style.display = 'flex';
+            }
+        }
+        
+        // Llamada inicial para mostrar el banner si es necesario
+        window.addEventListener('load', checkCookieConsent);
+        // === GESTIÓN PROFESIONAL DE COOKIES (FIN) ===
+
+
         // === FUNCIÓN TYPEWRITER ===
         const textElement = document.getElementById('typed-text');
         const textToType = "Soluciones Web y Mantenimiento Élite";
@@ -843,6 +992,7 @@
                 textElement.style.borderRight = 'none'; 
             }
         }
+        // Se ejecuta después de checkCookieConsent
         window.addEventListener('load', () => {
             setTimeout(typeText, 500);
         });
